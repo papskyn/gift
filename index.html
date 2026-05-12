@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Люблю тебя родная ❤</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; }
+        video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <video id="myVideo" muted playsinline preload="auto">
+        <!-- Путь к видео (в той же папке) -->
+        <source src="gift.mp4" type="video/mp4">
+        Ваш браузер не поддерживает видео.
+    </video>
+
+    <script>
+        window.addEventListener('load', function() {
+            const video = document.getElementById('myVideo');
+            // Пытаемся воспроизвести видео после полной загрузки страницы
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    // Автовоспроизведение началось
+                    console.log('Видео воспроизводится');
+                }).catch(error => {
+                    // Возможно, автовоспроизведение заблокировано
+                    console.log('Автовоспроизведение заблокировано: ', error);
+                    // Можно показать кнопку воспроизведения или инструкцию
+                });
+            }
+        });
+    </script>
+</body>
+</html>
