@@ -5,35 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Люблю тебя родная ❤</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; }
+        /* Убираем отступы и делаем страницу на весь экран */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;   /* скрываем возможные полосы прокрутки */
+            background: #000;    /* фон на случай черных полос */
+        }
+
+        /* Контейнер видео занимает всё окно браузера */
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Видео растягивается по контейнеру с сохранением пропорций и обрезкой лишнего */
         video {
             width: 100%;
-            height: auto;
+            height: 100%;
+            object-fit: cover;   /* заполняет контейнер, обрезая края при необходимости */
             display: block;
         }
     </style>
 </head>
 <body>
-    <video id="myVideo" muted playsinline preload="auto">
-        <!-- Путь к видео (в той же папке) -->
-        <source src="gift.mp4" type="video/mp4">
-        Ваш браузер не поддерживает видео.
-    </video>
+    <div class="video-container">
+        <!-- 
+            loop        – зацикливание
+            playsinline – разрешает встроенное воспроизведение на iOS (без перехода в полноэкранный режим)
+            preload="auto" – начинаем загрузку как можно раньше
+            muted убран, чтобы был звук
+            autoplay отсутствует — запуск произойдёт через JavaScript после полной загрузки
+        -->
+        <video id="myVideo" loop playsinline preload="auto">
+            <!-- Предполагается, что файл video.mp4 лежит в той же папке, что и index.html -->
+            <source src="gift.mp4" type="video/mp4">
+            Ваш браузер не поддерживает видео.
+        </video>
+    </div>
 
     <script>
         window.addEventListener('load', function() {
             const video = document.getElementById('myVideo');
-            // Пытаемся воспроизвести видео после полной загрузки страницы
+            
+            // Пытаемся запустить воспроизведение со звуком
             const playPromise = video.play();
+
             if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    // Автовоспроизведение началось
-                    console.log('Видео воспроизводится');
-                }).catch(error => {
-                    // Возможно, автовоспроизведение заблокировано
-                    console.log('Автовоспроизведение заблокировано: ', error);
-                    // Можно показать кнопку воспроизведения или инструкцию
-                });
+                playPromise
+                    .then(() => {
+                        console.log('Видео воспроизводится со звуком');
+                    })
+                    .catch(error => {
+                        // Автовоспроизведение со звуком часто блокируется на мобильных устройствах
+                        console.warn('Автовоспроизведение заблокировано. Возможно, потребуется взаимодействие пользователя.', error);
+                        
+                        // Раскомментируйте блок ниже, если хотите показать кнопку ручного запуска
+                        /*
+                        const btn = document.createElement('button');
+                        btn.textContent = '▶ Смотреть со звуком';
+                        btn.style.cssText = 'position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:10; padding:15px 30px; font-size:20px;';
+                        btn.onclick = () => {
+                            video.play();
+                            btn.remove();
+                        };
+                        document.body.appendChild(btn);
+                        */
+                    });
             }
         });
     </script>
